@@ -1,0 +1,57 @@
+<mat-sidenav-container class="app-container">
+  <!-- Sidebar Navigation -->
+  <mat-sidenav mode="side" opened class="app-sidenav">
+    <div class="brand-section">
+      <mat-icon class="brand-icon">corporate_fare</mat-icon>
+      <span class="brand-name">EWMS Portal</span>
+    </div>
+
+    <mat-nav-list class="nav-menu">
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link" class="nav-item">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </a>
+
+      <a mat-list-item routerLink="/employees" routerLinkActive="active-link" class="nav-item">
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>Employees</span>
+      </a>
+
+      <a mat-list-item routerLink="/departments" routerLinkActive="active-link" class="nav-item">
+        <mat-icon matListItemIcon>account_tree</mat-icon>
+        <span matListItemTitle>Departments</span>
+      </a>
+
+      <a mat-list-item routerLink="/settings" routerLinkActive="active-link" class="nav-item">
+        <mat-icon matListItemIcon>settings</mat-icon>
+        <span matListItemTitle>Settings</span>
+      </a>
+    </mat-nav-list>
+
+    <div class="user-profile-section">
+      <div class="avatar-circle">HR</div>
+      <div class="user-info">
+        <div class="user-name">HR Manager</div>
+        <div class="user-role">System Admin</div>
+      </div>
+    </div>
+  </mat-sidenav>
+
+  <!-- Main Workspace Viewport -->
+  <mat-sidenav-content class="app-content-wrapper">
+    <mat-toolbar class="app-toolbar">
+      <span class="page-title">{{ title }}</span>
+      <span class="spacer"></span>
+      <button mat-icon-button class="toolbar-btn">
+        <mat-icon>notifications</mat-icon>
+      </button>
+      <button mat-icon-button class="toolbar-btn">
+        <mat-icon>dark_mode</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

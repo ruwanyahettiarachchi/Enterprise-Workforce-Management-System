@@ -1,0 +1,189 @@
+.directory-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.directory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .title-block {
+    .page-header {
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      margin: 0 0 6px 0;
+      color: #f8fafc;
+    }
+    
+    .subtitle {
+      font-size: 14px;
+      color: #94a3b8;
+      margin: 0;
+    }
+  }
+
+  .add-btn {
+    font-weight: 600;
+    height: 44px;
+    border-radius: 8px;
+    padding: 0 20px;
+    
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+.filter-card {
+  border-radius: 12px;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+
+  .filter-layout {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    flex-wrap: wrap;
+
+    .search-field {
+      flex: 1 1 300px;
+    }
+
+    .filter-field {
+      flex: 0 1 200px;
+    }
+
+    /* Style material overrides in dark card */
+    ::v-deep .mat-mdc-text-field-wrapper {
+      background-color: #0f172a !important;
+    }
+
+    ::v-deep .mat-mdc-form-field-focus-overlay {
+      background-color: transparent !important;
+    }
+
+    ::v-deep .mdc-text-field__input {
+      color: #f8fafc !important;
+    }
+
+    ::v-deep .mat-mdc-form-field-label {
+      color: #94a3b8 !important;
+    }
+  }
+}
+
+.table-card {
+  border-radius: 12px;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  overflow: hidden;
+
+  .table-content {
+    padding: 0 !important;
+  }
+}
+
+.table-scroll-container {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.directory-table {
+  width: 100%;
+  background: transparent !important;
+  border-collapse: collapse;
+
+  th {
+    color: #94a3b8 !important;
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 18px 24px !important;
+    border-bottom: 1px solid #334155 !important;
+  }
+
+  td {
+    color: #f8fafc !important;
+    padding: 16px 24px !important;
+    border-bottom: 1px solid #334155 !important;
+    font-size: 14px !important;
+  }
+
+  tr:hover td {
+    background-color: rgba(51, 65, 85, 0.4) !important;
+  }
+
+  .name-cell {
+    font-weight: 600;
+    color: #3b82f6 !important;
+  }
+
+  .actions-cell {
+    white-space: nowrap;
+    
+    button {
+      margin-right: 4px;
+    }
+  }
+
+  .empty-cell {
+    text-align: center;
+    padding: 32px !important;
+    color: #94a3b8 !important;
+    font-style: italic;
+  }
+}
+
+/* Status Badge Styles */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: capitalize;
+}
+
+.status-active {
+  background-color: rgba(16, 185, 129, 0.15) ; /* emerald-500 alpha */
+  color: #10b981 ;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-probation {
+  background-color: rgba(245, 158, 11, 0.15) ; /* amber-500 alpha */
+  color: #f59e0b ;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.status-terminated {
+  background-color: rgba(239, 68, 68, 0.15) ; /* red-500 alpha */
+  color: #ef4444 ;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.table-paginator {
+  background: transparent !important;
+  color: #94a3b8 !important;
+  border-top: 1px solid #334155;
+  padding: 8px 16px !important;
+
+  ::v-deep .mat-mdc-paginator-range-label {
+    color: #f8fafc !important;
+  }
+
+  ::v-deep .mat-mdc-icon-button {
+    color: #94a3b8 !important;
+    
+    &[disabled] {
+      color: #334155 !important;
+    }
+  }
+}
