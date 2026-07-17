@@ -1,0 +1,116 @@
+<div class="form-container">
+  <div class="form-header">
+    <div class="title-block">
+      <h1 class="page-header">{{ isEditMode ? 'Edit Employee Profile' : 'Register New Employee' }}</h1>
+      <p class="subtitle">Fill out the profile details to maintain corporate team records.</p>
+    </div>
+    <button mat-icon-button routerLink="/employees" title="Back to Directory">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div>
+
+  <mat-card class="form-card">
+    <mat-card-content>
+      <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="employee-form">
+        
+        <!-- Name Fields Group -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="flex-field">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" placeholder="Enter first name">
+            <mat-error *ngIf="employeeForm.get('firstName')?.hasError('required')">
+              First name is required.
+            </mat-error>
+            <mat-error *ngIf="employeeForm.get('firstName')?.hasError('maxlength')">
+              First name cannot exceed 50 characters.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="flex-field">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" placeholder="Enter last name">
+            <mat-error *ngIf="employeeForm.get('lastName')?.hasError('required')">
+              Last name is required.
+            </mat-error>
+            <mat-error *ngIf="employeeForm.get('lastName')?.hasError('maxlength')">
+              Last name cannot exceed 50 characters.
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Contact Fields Group -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="flex-field">
+            <mat-label>Email Address</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="example@company.com">
+            <mat-error *ngIf="employeeForm.get('email')?.hasError('required')">
+              Email is required.
+            </mat-error>
+            <mat-error *ngIf="employeeForm.get('email')?.hasError('email')">
+              Please enter a valid email address.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="flex-field">
+            <mat-label>Phone Number (Optional)</mat-label>
+            <input matInput formControlName="phone" placeholder="+1234567890">
+            <mat-error *ngIf="employeeForm.get('phone')?.hasError('maxlength')">
+              Phone number cannot exceed 20 characters.
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Professional Details Group -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="flex-field">
+            <mat-label>Job Title</mat-label>
+            <input matInput formControlName="jobTitle" placeholder="e.g. Software Engineer">
+            <mat-error *ngIf="employeeForm.get('jobTitle')?.hasError('required')">
+              Job title is required.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="flex-field">
+            <mat-label>Join Date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="joinDate">
+            <mat-hint>MM/DD/YYYY</mat-hint>
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="employeeForm.get('joinDate')?.hasError('required')">
+              Join date is required.
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Status & Department Group -->
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="flex-field">
+            <mat-label>Employee Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option [value]="0">Active</mat-option>
+              <mat-option [value]="1">Probation</mat-option>
+              <mat-option [value]="2">Terminated</mat-option>
+            </mat-select>
+            <mat-error *ngIf="employeeForm.get('status')?.hasError('required')">
+              Status selection is required.
+            </mat-error>
+          </mat-form-field>
+
+          <div class="flex-field placeholder-col">
+            <!-- Reserved for Department Selection once built in separate branch -->
+            <p class="reserved-text">Department: Assigned at staging / development branch (Currently unassigned).</p>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button mat-button type="button" routerLink="/employees" class="cancel-btn">Cancel</button>
+          <button mat-flat-button color="primary" type="submit" class="save-btn">
+            <mat-icon>check</mat-icon> {{ isEditMode ? 'Update Profile' : 'Save Employee' }}
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

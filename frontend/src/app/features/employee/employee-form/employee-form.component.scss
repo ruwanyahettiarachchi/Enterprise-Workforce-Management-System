@@ -1,0 +1,158 @@
+.form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .title-block {
+    .page-header {
+      font-size: 28px;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      margin: 0 0 6px 0;
+      color: #f8fafc;
+    }
+    
+    .subtitle {
+      font-size: 14px;
+      color: #94a3b8;
+      margin: 0;
+    }
+  }
+
+  button {
+    color: #94a3b8;
+    &:hover {
+      color: #f8fafc;
+    }
+  }
+}
+
+.form-card {
+  border-radius: 12px;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  padding: 16px;
+}
+
+.employee-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+
+  .flex-field {
+    flex: 1 1 300px;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.placeholder-col {
+  justify-content: center;
+  padding: 0 12px;
+  
+  .reserved-text {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0;
+    font-style: italic;
+    line-height: 1.5;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+  border-top: 1px solid #334155;
+  padding-top: 24px;
+
+  .cancel-btn {
+    color: #94a3b8;
+    font-weight: 600;
+    height: 44px;
+    border-radius: 8px;
+    padding: 0 20px;
+    
+    &:hover {
+      background-color: #334155;
+      color: #f8fafc;
+    }
+  }
+
+  .save-btn {
+    font-weight: 600;
+    height: 44px;
+    border-radius: 8px;
+    padding: 0 20px;
+
+    mat-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+/* Material overrides within dark card */
+::v-deep {
+  .mat-mdc-text-field-wrapper {
+    background-color: #0f172a !important;
+  }
+
+  .mat-mdc-form-field-focus-overlay {
+    background-color: transparent !important;
+  }
+
+  .mdc-text-field__input {
+    color: #f8fafc !important;
+  }
+
+  .mat-mdc-form-field-label {
+    color: #94a3b8 !important;
+  }
+
+  .mat-datepicker-toggle {
+    color: #94a3b8 !important;
+  }
+
+  /* Style the datepicker popup to match dark mode */
+  .mat-datepicker-content {
+    background-color: #1e293b !important;
+    border: 1px solid #334155 !important;
+    color: #f8fafc !important;
+
+    .mat-calendar-body-cell-content {
+      color: #f8fafc !important;
+      
+      &:hover {
+        background-color: #334155 !important;
+      }
+    }
+
+    .mat-calendar-body-selected {
+      background-color: #3b82f6 !important;
+      color: #ffffff !important;
+    }
+
+    .mat-calendar-arrow {
+      fill: #f8fafc !important;
+    }
+
+    .mat-calendar-previous-button, .mat-calendar-next-button {
+      color: #f8fafc !important;
+    }
+  }
+}
