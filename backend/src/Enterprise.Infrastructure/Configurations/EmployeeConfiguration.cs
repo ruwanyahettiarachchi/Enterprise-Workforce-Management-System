@@ -46,6 +46,14 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
             .IsRequired()
             .HasDefaultValueSql("GETUTCDATE()");
 
+        builder.Property(e => e.DepartmentId)
+            .IsRequired(false);
+
+        builder.HasOne<Department>()
+            .WithMany()
+            .HasForeignKey(e => e.DepartmentId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.Property(e => e.LastModifiedAt)
             .IsRequired(false);
     }

@@ -12,10 +12,12 @@ namespace Enterprise.Application.Services;
 public class EmployeeService : IEmployeeService
 {
     private readonly IEmployeeRepository _employeeRepository;
+    private readonly IDepartmentRepository _departmentRepository;
 
-    public EmployeeService(IEmployeeRepository employeeRepository)
+    public EmployeeService(IEmployeeRepository employeeRepository, IDepartmentRepository departmentRepository)
     {
         _employeeRepository = employeeRepository;
+        _departmentRepository = departmentRepository;
     }
 
     public async Task<EmployeeResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -23,7 +25,14 @@ public class EmployeeService : IEmployeeService
         var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken);
         if (employee == null) return null;
 
-        return MapToResponse(employee);
+        string? departmentName = null;
+        if (employee.DepartmentId.HasValue)
+        {
+            var dept = await _departmentRepository.GetByIdAsync(employee.DepartmentId.Value, cancellationToken);
+            departmentName = dept?.Name;
+        }
+
+        return MapToResponse(employee, departmentName);
     }
 
     public async Task<(IEnumerable<EmployeeResponse> Items, int TotalCount)> GetPagedAsync(
@@ -40,7 +49,27 @@ public class EmployeeService : IEmployeeService
             pageSize,
             cancellationToken);
 
-        var responses = items.Select(MapToResponse);
+        // Bulk resolve department names to optimize performance (avoids N+1 query loop)
+        var deptIds = items
+            .Where(e => e.DepartmentId.HasValue)
+            .Select(e => e.DepartmentId!.Value)
+            .Distinct()
+            .ToList();
+
+        var deptDict = new Dictionary<Guid, string>();
+        if (deptIds.Any())
+        {
+            var depts = await _departmentRepository.GetAllAsync(cancellationToken);
+            deptDict = depts
+                .Where(d => deptIds.Contains(d.Id))
+                .ToDictionary(d => d.Id, d => d.Name);
+        }
+
+        var responses = items.Select(e => MapToResponse(
+            e,
+            e.DepartmentId.HasValue && deptDict.TryGetValue(e.DepartmentId.Value, out var name) ? name : null
+        ));
+
         return (responses, totalCount);
     }
 
@@ -53,7 +82,19 @@ public class EmployeeService : IEmployeeService
             throw new InvalidOperationException($"An employee with email '{request.Email}' already exists.");
         }
 
-        // 2. Create Rich Domain Model Entity
+        // 2. Validate department if provided
+        string? departmentName = null;
+        if (request.DepartmentId.HasValue)
+        {
+            var dept = await _departmentRepository.GetByIdAsync(request.DepartmentId.Value, cancellationToken);
+            if (dept == null)
+            {
+                throw new ArgumentException("The specified department does not exist.", nameof(request.DepartmentId));
+            }
+            departmentName = dept.Name;
+        }
+
+        // 3. Create Rich Domain Model Entity
         var employee = new Employee(
             request.FirstName,
             request.LastName,
@@ -64,11 +105,11 @@ public class EmployeeService : IEmployeeService
             request.DepartmentId
         );
 
-        // 3. Persist
+        // 4. Persist
         await _employeeRepository.AddAsync(employee, cancellationToken);
         await _employeeRepository.SaveChangesAsync(cancellationToken);
 
-        return MapToResponse(employee);
+        return MapToResponse(employee, departmentName);
     }
 
     public async Task<bool> UpdateAsync(Guid id, UpdateEmployeeRequest request, CancellationToken cancellationToken = default)
@@ -87,7 +128,17 @@ public class EmployeeService : IEmployeeService
             }
         }
 
-        // 3. Update details (invokes Domain validation guards)
+        // 3. Validate department if provided
+        if (request.DepartmentId.HasValue)
+        {
+            var dept = await _departmentRepository.GetByIdAsync(request.DepartmentId.Value, cancellationToken);
+            if (dept == null)
+            {
+                throw new ArgumentException("The specified department does not exist.", nameof(request.DepartmentId));
+            }
+        }
+
+        // 4. Update details (invokes Domain validation guards)
         employee.UpdateDetails(
             request.FirstName,
             request.LastName,
@@ -97,10 +148,10 @@ public class EmployeeService : IEmployeeService
             request.DepartmentId
         );
 
-        // 4. Update status
+        // 5. Update status
         employee.TransitionStatus(request.Status);
 
-        // 5. Persist
+        // 6. Persist
         _employeeRepository.Update(employee);
         await _employeeRepository.SaveChangesAsync(cancellationToken);
 
@@ -118,7 +169,7 @@ public class EmployeeService : IEmployeeService
         return true;
     }
 
-    private static EmployeeResponse MapToResponse(Employee employee)
+    private static EmployeeResponse MapToResponse(Employee employee, string? departmentName)
     {
         return new EmployeeResponse(
             employee.Id,
@@ -129,7 +180,8 @@ public class EmployeeService : IEmployeeService
             employee.JobTitle,
             employee.Status,
             employee.JoinDate,
-            employee.DepartmentId
+            employee.DepartmentId,
+            departmentName
         );
     }
 }

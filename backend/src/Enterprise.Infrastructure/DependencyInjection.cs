@@ -17,6 +17,7 @@ public static class DependencyInjection
                 b.MigrationsAssembly(typeof(EnterpriseDbContext).Assembly.FullName)));
 
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
         return services;
     }
