@@ -22,6 +22,11 @@ export const routes: Routes = [
       .then(m => m.EmployeeFormComponent)
   },
   {
+    path: 'departments',
+    loadComponent: () => import('./features/department/department-list/department-list.component')
+      .then(m => m.DepartmentListComponent)
+  },
+  {
     path: '**',
     redirectTo: 'employees'
   }

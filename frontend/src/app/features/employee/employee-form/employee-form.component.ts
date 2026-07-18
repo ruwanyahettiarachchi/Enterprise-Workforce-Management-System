@@ -11,7 +11,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { EmployeeService } from '../../../core/services/employee.service';
+import { DepartmentService } from '../../../core/services/department.service';
 import { EmployeeStatus } from '../../../core/models/employee.model';
+import { Department } from '../../../core/models/department.model';
 
 @Component({
   selector: 'app-employee-form',
@@ -35,6 +37,7 @@ import { EmployeeStatus } from '../../../core/models/employee.model';
 export class EmployeeFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private employeeService = inject(EmployeeService);
+  private departmentService = inject(DepartmentService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
@@ -42,9 +45,11 @@ export class EmployeeFormComponent implements OnInit {
   employeeForm!: FormGroup;
   isEditMode = false;
   employeeId: string | null = null;
+  departments: Department[] = [];
 
   ngOnInit(): void {
     this.initForm();
+    this.loadDepartments();
     this.checkEditMode();
   }
 
@@ -57,7 +62,18 @@ export class EmployeeFormComponent implements OnInit {
       jobTitle: ['', [Validators.required, Validators.maxLength(100)]],
       joinDate: [new Date(), [Validators.required]],
       status: [EmployeeStatus.Active, [Validators.required]],
-      departmentId: [null] // Nullable since departments are developed in a separate branch
+      departmentId: [null]
+    });
+  }
+
+  private loadDepartments(): void {
+    this.departmentService.getDepartments().subscribe({
+      next: (data) => {
+        this.departments = data;
+      },
+      error: (err) => {
+        console.error('Failed loading departments menu options', err);
+      }
     });
   }
 
@@ -67,7 +83,6 @@ export class EmployeeFormComponent implements OnInit {
       this.isEditMode = true;
       this.employeeService.getEmployeeById(this.employeeId).subscribe({
         next: (employee) => {
-          // Parse string date to Date object for datepicker
           const joinDate = employee.joinDate ? new Date(employee.joinDate) : new Date();
           this.employeeForm.patchValue({
             ...employee,
@@ -91,7 +106,7 @@ export class EmployeeFormComponent implements OnInit {
 
     const formValue = this.employeeForm.value;
     
-    // Format joinDate to YYYY-MM-DD for EF Core mapping compatability
+    // Format joinDate to YYYY-MM-DD for EF Core mapping compatibility
     const dateObj = formValue.joinDate as Date;
     const formattedJoinDate = dateObj.toISOString().split('T')[0];
 
