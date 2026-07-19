@@ -26,6 +26,8 @@ public interface IEmployeeRepository
     void Delete(Employee employee);
     
     Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default);
+
+    Task<bool> HasEmployeesInDepartmentAsync(Guid departmentId, CancellationToken cancellationToken = default);
     
     Task SaveChangesAsync(CancellationToken cancellationToken = default);
 }
