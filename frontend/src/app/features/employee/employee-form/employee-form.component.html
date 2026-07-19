@@ -96,10 +96,15 @@
             </mat-error>
           </mat-form-field>
 
-          <div class="flex-field placeholder-col">
-            <!-- Reserved for Department Selection once built in separate branch -->
-            <p class="reserved-text">Department: Assigned at staging / development branch (Currently unassigned).</p>
-          </div>
+          <mat-form-field appearance="outline" class="flex-field">
+            <mat-label>Department</mat-label>
+            <mat-select formControlName="departmentId">
+              <mat-option [value]="null">Unassigned</mat-option>
+              <mat-option *ngFor="let dept of departments" [value]="dept.id">
+                {{ dept.name }} ({{ dept.code }})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
 
         <!-- Form Actions -->

@@ -38,7 +38,7 @@ export class EmployeeListComponent implements OnInit {
   private employeeService = inject(EmployeeService);
   private snackBar = inject(MatSnackBar);
 
-  displayedColumns: string[] = ['name', 'email', 'jobTitle', 'status', 'joinDate', 'actions'];
+  displayedColumns: string[] = ['name', 'email', 'jobTitle', 'department', 'status', 'joinDate', 'actions'];
   employees: Employee[] = [];
   
   // Pagination & Filtering state

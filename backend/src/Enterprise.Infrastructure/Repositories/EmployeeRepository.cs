@@ -85,6 +85,11 @@ public class EmployeeRepository : IEmployeeRepository
         return await _context.Employees.AnyAsync(e => e.Email == emailLower, cancellationToken);
     }
 
+    public async Task<bool> HasEmployeesInDepartmentAsync(Guid departmentId, CancellationToken cancellationToken = default)
+    {
+        return await _context.Employees.AnyAsync(e => e.DepartmentId == departmentId, cancellationToken);
+    }
+
     public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         await _context.SaveChangesAsync(cancellationToken);

@@ -1,0 +1,140 @@
+<div class="department-container">
+  <div class="page-header-section">
+    <h1 class="page-header">Department Directory</h1>
+    <p class="subtitle">Organize organizational units, allocate managers, and manage structural entities.</p>
+  </div>
+
+  <div class="split-layout">
+    <!-- Left Panel: Department Table Listing -->
+    <div class="left-panel">
+      <mat-card class="table-card">
+        <mat-card-content class="table-content-area">
+          <div class="table-scroll-container">
+            <table mat-table [dataSource]="departments" class="department-table">
+              
+              <!-- Name Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Department Name </th>
+                <td mat-cell *matCellDef="let dept" class="name-cell"> {{ dept.name }} </td>
+              </ng-container>
+
+              <!-- Code Column -->
+              <ng-container matColumnDef="code">
+                <th mat-header-cell *matHeaderCellDef> Code </th>
+                <td mat-cell *matCellDef="let dept">
+                  <span class="code-badge">{{ dept.code }}</span>
+                </td>
+              </ng-container>
+
+              <!-- Manager Column -->
+              <ng-container matColumnDef="manager">
+                <th mat-header-cell *matHeaderCellDef> Manager </th>
+                <td mat-cell *matCellDef="let dept">
+                  {{ dept.managerName || 'Unassigned' }}
+                </td>
+              </ng-container>
+
+              <!-- Employee Count Column -->
+              <ng-container matColumnDef="employees">
+                <th mat-header-cell *matHeaderCellDef> Employees </th>
+                <td mat-cell *matCellDef="let dept" class="count-cell">
+                  {{ dept.employeeCount || 0 }}
+                </td>
+              </ng-container>
+
+              <!-- Actions Column -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <td mat-cell *matCellDef="let dept" class="actions-cell">
+                  <button mat-icon-button color="primary" (click)="selectDepartmentForEdit(dept)" title="Edit Department">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteDepartment(dept.id)" title="Delete Department">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+              <!-- Row shown when there is no data -->
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell empty-cell" [attr.colspan]="displayedColumns.length">
+                  No departments found. Create a new department on the right panel to get started.
+                </td>
+              </tr>
+            </table>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Right Panel: Create/Edit Form -->
+    <div class="right-panel">
+      <mat-card class="form-card">
+        <mat-card-header class="form-card-header">
+          <mat-card-title class="form-title">
+            {{ isEditMode ? 'Modify Department' : 'New Department' }}
+          </mat-card-title>
+          <mat-card-subtitle class="form-subtitle">
+            {{ isEditMode ? 'Update details of the selected department' : 'Register a new organizational unit' }}
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="form-content-area">
+          <form [formGroup]="departmentForm" (ngSubmit)="onSubmit()" class="dept-form">
+            <!-- Name Input -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Department Name</mat-label>
+              <input matInput formControlName="name" placeholder="e.g. Engineering">
+              <mat-error *ngIf="departmentForm.get('name')?.hasError('required')">
+                Name is required.
+              </mat-error>
+              <mat-error *ngIf="departmentForm.get('name')?.hasError('maxlength')">
+                Name cannot exceed 100 characters.
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Code Input -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Department Code</mat-label>
+              <input matInput formControlName="code" placeholder="e.g. ENG" [readonly]="isEditMode">
+              <mat-hint *ngIf="!isEditMode">Alphanumeric, up to 10 chars (cannot change later)</mat-hint>
+              <mat-error *ngIf="departmentForm.get('code')?.hasError('required')">
+                Code is required.
+              </mat-error>
+              <mat-error *ngIf="departmentForm.get('code')?.hasError('pattern')">
+                Code must be alphanumeric only.
+              </mat-error>
+              <mat-error *ngIf="departmentForm.get('code')?.hasError('maxlength')">
+                Code cannot exceed 10 characters.
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Manager Dropdown -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Department Manager</mat-label>
+              <mat-select formControlName="managerId">
+                <mat-option [value]="null">Unassigned</mat-option>
+                <mat-option *ngFor="let emp of employees" [value]="emp.id">
+                  {{ emp.firstName }} {{ emp.lastName }} ({{ emp.jobTitle }})
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Action buttons -->
+            <div class="form-actions">
+              <button mat-button type="button" *ngIf="isEditMode" (click)="cancelEdit()" class="cancel-btn">
+                Cancel
+              </button>
+              <button mat-flat-button color="primary" type="submit" class="submit-btn">
+                <mat-icon>check</mat-icon> {{ isEditMode ? 'Update' : 'Create' }}
+              </button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
