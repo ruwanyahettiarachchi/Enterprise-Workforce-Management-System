@@ -1,3 +1,5 @@
+<img width="2560" height="1312" alt="Gemini_Generated_Image_swski1swski1swsk (1)" src="https://github.com/user-attachments/assets/3ab8e1d0-0f2a-4732-a7c4-64ffe3b164d8" />
+
 # Enterprise Workforce Management System (EWMS)
 
 > 🚧 This project is currently under active development.
