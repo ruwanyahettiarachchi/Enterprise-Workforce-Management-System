@@ -1,0 +1,318 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .page-header {
+    font-size: 28px;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    margin: 0 0 6px 0;
+    color: #f8fafc;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    color: #94a3b8;
+    margin: 0;
+  }
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #94a3b8;
+  font-size: 16px;
+  padding: 40px 0;
+
+  .spinning {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Stat Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+  gap: 16px;
+  border-radius: 12px;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  .card-details {
+    display: flex;
+    flex-direction: column;
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      color: #f8fafc;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+  }
+
+  &.primary-card .card-icon {
+    background-color: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+  }
+
+  &.accent-card .card-icon {
+    background-color: rgba(168, 85, 247, 0.15);
+    color: #a855f7;
+  }
+
+  &.warning-card .card-icon {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+  }
+
+  &.success-card .card-icon {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+  }
+}
+
+/* Visual Section Grid */
+.visual-grid {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+
+  .distribution-card {
+    flex: 3 1 400px;
+  }
+
+  .events-card {
+    flex: 2 1 320px;
+  }
+}
+
+.visual-card {
+  border-radius: 12px;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  padding: 20px;
+
+  .card-header {
+    padding-bottom: 16px;
+    border-bottom: 1px solid #334155;
+    margin-bottom: 20px;
+
+    mat-card-title {
+      font-size: 18px;
+      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      mat-icon {
+        color: #3b82f6;
+      }
+    }
+
+    mat-card-subtitle {
+      font-size: 13px;
+      color: #94a3b8;
+    }
+  }
+
+  .card-body {
+    padding: 0 !important;
+  }
+}
+
+/* Bar Chart Styling */
+.bar-chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chart-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  .label-col {
+    width: 140px;
+    display: flex;
+    flex-direction: column;
+
+    .dept-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    .dept-code {
+      font-size: 11px;
+      color: #64748b;
+      font-family: monospace;
+    }
+  }
+
+  .bar-col {
+    flex: 1;
+    height: 12px;
+    background-color: #0f172a;
+    border-radius: 6px;
+    overflow: hidden;
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 100%);
+      border-radius: 6px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+
+  .value-col {
+    width: 70px;
+    text-align: right;
+
+    .count-badge {
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+  }
+}
+
+/* Events List */
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.event-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #0f172a;
+  border: 1px solid #334155;
+
+  .event-icon-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .event-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    .emp-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    .emp-title {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+  }
+
+  .event-tag-box {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .event-type-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: #10b981;
+      background-color: rgba(16, 185, 129, 0.15);
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 2px;
+    }
+
+    .event-date {
+      font-size: 11px;
+      color: #64748b;
+    }
+  }
+}
+
+.empty-state {
+  padding: 24px 0;
+  text-align: center;
+  color: #94a3b8;
+  font-style: italic;
+  font-size: 14px;
+
+  a {
+    color: #3b82f6;
+    text-decoration: none;
+    &:hover { text-decoration: underline; }
+  }
+}

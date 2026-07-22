@@ -1,0 +1,118 @@
+<div class="dashboard-container">
+  <!-- Header Section -->
+  <div class="dashboard-header">
+    <div class="title-block">
+      <h1 class="page-header">Executive Dashboard</h1>
+      <p class="subtitle">Real-time workforce summary, organizational distribution, and upcoming milestone events.</p>
+    </div>
+    <div class="quick-actions">
+      <button mat-flat-button color="primary" routerLink="/employees/new">
+        <mat-icon>person_add</mat-icon> Add Employee
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <mat-icon class="spinning">sync</mat-icon> Loading workforce telemetry...
+  </div>
+
+  <div *ngIf="!loading && stats" class="dashboard-content">
+    <!-- Stat Cards Grid -->
+    <div class="stats-grid">
+      <mat-card class="stat-card primary-card">
+        <div class="card-icon"><mat-icon>people</mat-icon></div>
+        <div class="card-details">
+          <span class="stat-value">{{ stats.totalActiveEmployees }}</span>
+          <span class="stat-label">Active Employees</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="stat-card accent-card">
+        <div class="card-icon"><mat-icon>business</mat-icon></div>
+        <div class="card-details">
+          <span class="stat-value">{{ stats.totalDepartments }}</span>
+          <span class="stat-label">Departments</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="stat-card warning-card">
+        <div class="card-icon"><mat-icon>badge</mat-icon></div>
+        <div class="card-details">
+          <span class="stat-value">{{ stats.totalProbationEmployees }}</span>
+          <span class="stat-label">On Probation</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="stat-card success-card">
+        <div class="card-icon"><mat-icon>verified</mat-icon></div>
+        <div class="card-details">
+          <span class="stat-value">System OK</span>
+          <span class="stat-label">Clean Architecture v0.1</span>
+        </div>
+      </mat-card>
+    </div>
+
+    <!-- Main Visual Split: Department Distribution & Upcoming Events -->
+    <div class="visual-grid">
+      <!-- Left: Department Distribution Chart -->
+      <mat-card class="visual-card distribution-card">
+        <mat-card-header class="card-header">
+          <mat-card-title><mat-icon>pie_chart</mat-icon> Department Distribution</mat-card-title>
+          <mat-card-subtitle>Active headcount breakdown across corporate divisions</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="card-body">
+          <div *ngIf="!stats.departmentDistributions.length" class="empty-state">
+            No departments created yet. <a routerLink="/departments">Set up departments</a>
+          </div>
+
+          <div class="bar-chart-container">
+            <div *ngFor="let dist of stats.departmentDistributions" class="chart-row">
+              <div class="label-col">
+                <span class="dept-name">{{ dist.departmentName }}</span>
+                <span class="dept-code">{{ dist.code }}</span>
+              </div>
+              <div class="bar-col">
+                <div class="bar-fill" [style.width.%]="getBarWidthPercentage(dist.employeeCount)"></div>
+              </div>
+              <div class="value-col">
+                <span class="count-badge">{{ dist.employeeCount }} staff</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Right: Upcoming Events Widget -->
+      <mat-card class="visual-card events-card">
+        <mat-card-header class="card-header">
+          <mat-card-title><mat-icon>event</mat-icon> Upcoming Milestones</mat-card-title>
+          <mat-card-subtitle>Work anniversaries and join dates in next 30 days</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content class="card-body">
+          <div *ngIf="!stats.upcomingEvents.length" class="empty-state">
+            No upcoming milestones in the next 30 days.
+          </div>
+
+          <div class="events-list">
+            <div *ngFor="let evt of stats.upcomingEvents" class="event-item">
+              <div class="event-icon-avatar">
+                <mat-icon>cake</mat-icon>
+              </div>
+              <div class="event-details">
+                <span class="emp-name">{{ evt.employeeName }}</span>
+                <span class="emp-title">{{ evt.jobTitle }}</span>
+              </div>
+              <div class="event-tag-box">
+                <span class="event-type-tag">{{ evt.eventType }}</span>
+                <span class="event-date">{{ evt.eventDate | date:'mediumDate' }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
