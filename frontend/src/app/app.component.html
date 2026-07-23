@@ -45,8 +45,8 @@
       <button mat-icon-button class="toolbar-btn">
         <mat-icon>notifications</mat-icon>
       </button>
-      <button mat-icon-button class="toolbar-btn">
-        <mat-icon>dark_mode</mat-icon>
+      <button mat-icon-button class="toolbar-btn" (click)="toggleTheme()">
+        <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
       </button>
     </mat-toolbar>
 
