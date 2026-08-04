@@ -85,6 +85,12 @@ public class EmployeeRepository : IEmployeeRepository
         return await _context.Employees.AnyAsync(e => e.Email == emailLower, cancellationToken);
     }
 
+    public async Task<bool> ExistsByNICAsync(string nic, CancellationToken cancellationToken = default)
+    {
+        var nicUpper = nic.Trim().ToUpperInvariant();
+        return await _context.Employees.AnyAsync(e => e.NIC == nicUpper, cancellationToken);
+    }
+
     public async Task<bool> HasEmployeesInDepartmentAsync(Guid departmentId, CancellationToken cancellationToken = default)
     {
         return await _context.Employees.AnyAsync(e => e.DepartmentId == departmentId, cancellationToken);

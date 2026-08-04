@@ -10,4 +10,9 @@ public record UpdateEmployeeRequest(
     string? Phone,
     string JobTitle,
     Guid? DepartmentId,
-    EmployeeStatus Status);
+    EmployeeStatus Status,
+    MaritalStatus MaritalStatus,
+    string AddressLine1,
+    string District,
+    string City,
+    string PostalCode);

@@ -42,6 +42,40 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
             .IsRequired()
             .HasColumnType("date");
 
+        // Demographic & Address configurations
+        builder.Property(e => e.NIC)
+            .IsRequired()
+            .HasMaxLength(12);
+
+        builder.HasIndex(e => e.NIC)
+            .IsUnique();
+
+        builder.Property(e => e.DateOfBirth)
+            .IsRequired()
+            .HasColumnType("date");
+
+        builder.Property(e => e.Gender)
+            .IsRequired();
+
+        builder.Property(e => e.MaritalStatus)
+            .IsRequired();
+
+        builder.Property(e => e.AddressLine1)
+            .IsRequired()
+            .HasMaxLength(150);
+
+        builder.Property(e => e.District)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.Property(e => e.City)
+            .IsRequired()
+            .HasMaxLength(50);
+
+        builder.Property(e => e.PostalCode)
+            .IsRequired()
+            .HasMaxLength(15);
+
         builder.Property(e => e.CreatedAt)
             .IsRequired()
             .HasDefaultValueSql("GETUTCDATE()");

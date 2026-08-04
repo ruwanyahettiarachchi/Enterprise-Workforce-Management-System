@@ -13,4 +13,12 @@ public record EmployeeResponse(
     EmployeeStatus Status,
     DateTime JoinDate,
     Guid? DepartmentId,
-    string? DepartmentName = null);
+    string? DepartmentName,
+    string NIC,
+    DateTime DateOfBirth,
+    Gender Gender,
+    MaritalStatus MaritalStatus,
+    string AddressLine1,
+    string District,
+    string City,
+    string PostalCode);
