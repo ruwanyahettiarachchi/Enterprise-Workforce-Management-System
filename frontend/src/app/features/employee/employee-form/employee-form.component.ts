@@ -77,6 +77,38 @@ export class EmployeeFormComponent implements OnInit {
     { value: Gender.Female, label: 'Female' }
   ];
 
+  activeTabIndex = 0;
+
+  nextTab(): void {
+    if (this.activeTabIndex < 2) {
+      this.activeTabIndex++;
+    }
+  }
+
+  previousTab(): void {
+    if (this.activeTabIndex > 0) {
+      this.activeTabIndex--;
+    }
+  }
+
+  isTabValid(tabIndex: number): boolean {
+    if (tabIndex === 0) {
+      const fields = ['firstName', 'lastName', 'email', 'nic', 'maritalStatus'];
+      return fields.every(f => {
+        const ctrl = this.employeeForm.get(f);
+        return ctrl ? ctrl.valid : false;
+      });
+    }
+    if (tabIndex === 1) {
+      const fields = ['addressLine1', 'district', 'city'];
+      return fields.every(f => {
+        const ctrl = this.employeeForm.get(f);
+        return ctrl ? ctrl.valid : false;
+      });
+    }
+    return true;
+  }
+
   statuses = [
     { value: EmployeeStatus.Active, label: 'Active' },
     { value: EmployeeStatus.Probation, label: 'Probation' },

@@ -12,10 +12,11 @@
   <mat-card class="form-card">
     <mat-card-content class="form-card-content">
       <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="employee-form">
-        
+
         <!-- Angular Material Tab Group for Professional Segmented Layout -->
-        <mat-tab-group animationDuration="200ms" class="form-tabs">
-          
+        <mat-tab-group [selectedIndex]="activeTabIndex" (selectedIndexChange)="activeTabIndex = $event"
+          animationDuration="200ms" class="form-tabs">
+
           <!-- Tab 1: Personal & Demographic Info -->
           <mat-tab label="Personal & Identity">
             <div class="tab-content">
@@ -132,7 +133,7 @@
                 <mat-form-field appearance="outline" class="flex-field readonly-field">
                   <mat-label>Province</mat-label>
                   <input matInput [value]="province" readonly placeholder="Auto-fills from selected District">
-                  <mat-hint>Auto-calculated</mat-hint>
+                  <mat-hint>Auto-Filled</mat-hint>
                 </mat-form-field>
               </div>
 
@@ -154,7 +155,7 @@
                 <mat-form-field appearance="outline" class="flex-field readonly-field">
                   <mat-label>Postal Code</mat-label>
                   <input matInput formControlName="postalCode" readonly placeholder="Auto-fills from selected City">
-                  <mat-hint>Auto-calculated</mat-hint>
+                  <mat-hint>Auto-Filled</mat-hint>
                 </mat-form-field>
               </div>
             </div>
@@ -214,8 +215,22 @@
 
         <!-- Form Actions -->
         <div class="form-actions">
-          <button mat-button type="button" routerLink="/employees" class="cancel-btn">Cancel</button>
-          <button mat-flat-button color="primary" type="submit" class="save-btn">
+          <button mat-button type="button" *ngIf="activeTabIndex > 0" (click)="previousTab()" class="cancel-btn">
+            <mat-icon>arrow_back</mat-icon> Back
+          </button>
+          <button mat-button type="button" *ngIf="activeTabIndex === 0" routerLink="/employees" class="cancel-btn">
+            Cancel
+          </button>
+
+          <span class="spacer" style="flex: 1 1 auto;"></span>
+
+          <button mat-flat-button color="primary" type="button" *ngIf="activeTabIndex < 2" (click)="nextTab()"
+            [disabled]="!isTabValid(activeTabIndex)" class="save-btn">
+            Next <mat-icon>arrow_forward</mat-icon>
+          </button>
+
+          <button mat-flat-button color="primary" type="submit" *ngIf="activeTabIndex === 2"
+            [disabled]="employeeForm.invalid" class="save-btn">
             <mat-icon>check</mat-icon> {{ isEditMode ? 'Update Profile' : 'Save Employee' }}
           </button>
         </div>
