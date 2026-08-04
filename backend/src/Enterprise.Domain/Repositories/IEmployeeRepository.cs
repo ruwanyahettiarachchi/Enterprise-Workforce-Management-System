@@ -27,6 +27,8 @@ public interface IEmployeeRepository
     
     Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default);
 
+    Task<bool> ExistsByNICAsync(string nic, CancellationToken cancellationToken = default);
+
     Task<bool> HasEmployeesInDepartmentAsync(Guid departmentId, CancellationToken cancellationToken = default);
     
     Task SaveChangesAsync(CancellationToken cancellationToken = default);
