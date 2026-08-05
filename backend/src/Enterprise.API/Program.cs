@@ -15,7 +15,24 @@ builder.Services.AddControllers();
 
 // 3. Add API Explorer & Swagger for visual validation
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Enterprise Workforce Management System (EWMS) API",
+        Version = "v1",
+        Description = "An enterprise-grade Clean Architecture Web API to manage workforce entities, departments, and metric dashboards.",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "Enterprise Development Team",
+            Email = "support@ewms.com"
+        }
+    });
+
+    // Enable XML Comments in Swagger UI
+    var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 
 // 4. Configure CORS for local Angular development
 builder.Services.AddCors(options =>
