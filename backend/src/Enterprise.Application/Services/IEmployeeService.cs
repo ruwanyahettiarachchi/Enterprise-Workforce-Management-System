@@ -13,6 +13,8 @@ public interface IEmployeeService
     Task<(IEnumerable<EmployeeResponse> Items, int TotalCount)> GetPagedAsync(
         string? searchTerm,
         int? status,
+        Guid? departmentId,
+        string? jobTitle,
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken = default);
