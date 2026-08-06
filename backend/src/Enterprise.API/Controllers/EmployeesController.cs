@@ -24,10 +24,12 @@ public class EmployeesController : ControllerBase
     }
 
     /// <summary>
-    /// Retrieves a paginated list of employees with search and status filters.
+    /// Retrieves a paginated list of employees with advanced search and filters.
     /// </summary>
     /// <param name="searchTerm">Optional query searching first name, last name, email, or job title.</param>
     /// <param name="status">Optional status code filter: 0 = Active, 1 = Probation, 2 = Terminated.</param>
+    /// <param name="departmentId">Optional unique identifier Guid of the department filter.</param>
+    /// <param name="jobTitle">Optional job title value match filter.</param>
     /// <param name="pageNumber">1-indexed page identifier (default 1).</param>
     /// <param name="pageSize">Amount of records returned per page (default 10).</param>
     /// <param name="cancellationToken">Cancellation token.</param>
@@ -40,6 +42,8 @@ public class EmployeesController : ControllerBase
     public async Task<IActionResult> GetPaged(
         [FromQuery] string? searchTerm,
         [FromQuery] int? status,
+        [FromQuery] Guid? departmentId,
+        [FromQuery] string? jobTitle,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10,
         CancellationToken cancellationToken = default)
@@ -52,6 +56,8 @@ public class EmployeesController : ControllerBase
         var (items, totalCount) = await _employeeService.GetPagedAsync(
             searchTerm,
             status,
+            departmentId,
+            jobTitle,
             pageNumber,
             pageSize,
             cancellationToken);

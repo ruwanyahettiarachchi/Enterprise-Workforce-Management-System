@@ -14,20 +14,47 @@
       <!-- Search Input -->
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>Search directory...</mat-label>
-        <input matInput (input)="onSearch($event)" placeholder="Search by name, email, or job title">
+        <input #searchInput matInput (input)="onSearch($event)" placeholder="Search by name, email, or job title">
         <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <!-- Department Filter -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Department</mat-label>
+        <mat-select [value]="departmentFilter || 'all'" (selectionChange)="onDepartmentFilterChange($event.value)">
+          <mat-option value="all">All Departments</mat-option>
+          <mat-option *ngFor="let dept of departments" [value]="dept.id">
+            {{ dept.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Job Title Filter -->
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Job Title</mat-label>
+        <mat-select [value]="jobTitleFilter || 'all'" (selectionChange)="onJobTitleFilterChange($event.value)">
+          <mat-option value="all">All Job Titles</mat-option>
+          <mat-option *ngFor="let title of jobTitles" [value]="title">
+            {{ title }}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
 
       <!-- Status Filter -->
       <mat-form-field appearance="outline" class="filter-field">
         <mat-label>Status</mat-label>
-        <mat-select (selectionChange)="onStatusFilterChange($event.value)" defaultValue="all">
+        <mat-select [value]="statusFilter !== undefined ? statusFilter.toString() : 'all'" (selectionChange)="onStatusFilterChange($event.value)">
           <mat-option value="all">All Statuses</mat-option>
           <mat-option value="0">Active</mat-option>
           <mat-option value="1">Probation</mat-option>
           <mat-option value="2">Terminated</mat-option>
         </mat-select>
       </mat-form-field>
+
+      <!-- Reset Action -->
+      <button mat-stroked-button color="warn" (click)="resetFilters(searchInput)" class="reset-btn" title="Reset Filters">
+        <mat-icon>filter_list_off</mat-icon> Clear
+      </button>
     </mat-card-content>
   </mat-card>
 

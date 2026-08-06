@@ -38,6 +38,8 @@ public class EmployeeService : IEmployeeService
     public async Task<(IEnumerable<EmployeeResponse> Items, int TotalCount)> GetPagedAsync(
         string? searchTerm,
         int? status,
+        Guid? departmentId,
+        string? jobTitle,
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken = default)
@@ -45,6 +47,8 @@ public class EmployeeService : IEmployeeService
         var (items, totalCount) = await _employeeRepository.GetPagedAsync(
             searchTerm,
             status,
+            departmentId,
+            jobTitle,
             pageNumber,
             pageSize,
             cancellationToken);

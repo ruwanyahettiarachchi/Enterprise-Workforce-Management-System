@@ -31,6 +31,8 @@ public class EmployeeRepository : IEmployeeRepository
     public async Task<(IEnumerable<Employee> Items, int TotalCount)> GetPagedAsync(
         string? searchTerm,
         int? status,
+        Guid? departmentId,
+        string? jobTitle,
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken = default)
@@ -50,6 +52,17 @@ public class EmployeeRepository : IEmployeeRepository
         if (status.HasValue)
         {
             query = query.Where(e => (int)e.Status == status.Value);
+        }
+
+        if (departmentId.HasValue)
+        {
+            query = query.Where(e => e.DepartmentId == departmentId.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(jobTitle))
+        {
+            var jobTitleTrim = jobTitle.Trim();
+            query = query.Where(e => e.JobTitle == jobTitleTrim);
         }
 
         var totalCount = await query.CountAsync(cancellationToken);

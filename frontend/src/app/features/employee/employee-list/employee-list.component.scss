@@ -48,13 +48,29 @@
     gap: 16px;
     padding: 16px;
     flex-wrap: wrap;
+    align-items: center;
 
     .search-field {
-      flex: 1 1 300px;
+      flex: 2 1 300px;
     }
 
     .filter-field {
-      flex: 0 1 200px;
+      flex: 1 1 180px;
+    }
+
+    .reset-btn {
+      height: 56px; /* matches outline input height */
+      border-radius: 8px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-sizing: border-box;
+      
+      mat-icon {
+        margin-right: 4px;
+      }
     }
 
     /* Style material overrides inside card */
