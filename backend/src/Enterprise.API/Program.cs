@@ -55,6 +55,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Run database migrations and seed default data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<Enterprise.Infrastructure.EnterpriseDbContext>();
+        await Enterprise.Infrastructure.DbSeeder.SeedAsync(dbContext);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
+
 app.UseHttpsRedirection();
 
 // Use CORS before routing/authorization middleware

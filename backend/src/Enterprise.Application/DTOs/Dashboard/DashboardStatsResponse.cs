@@ -13,11 +13,23 @@ public record UpcomingEventDto(
     string EmployeeName,
     string JobTitle,
     string EventType,
-    DateTime EventDate);
+    DateTime EventDate,
+    int? MilestoneYears = null); // e.g. "5 Year Work Anniversary"
+
+public record GenderBreakdownDto(
+    int MaleCount,
+    int FemaleCount);
+
+public record MaritalStatusBreakdownDto(
+    string Status,
+    int Count);
 
 public record DashboardStatsResponse(
     int TotalActiveEmployees,
     int TotalDepartments,
     int TotalProbationEmployees,
+    int TotalTerminatedEmployees,
     IEnumerable<DepartmentDistributionDto> DepartmentDistributions,
-    IEnumerable<UpcomingEventDto> UpcomingEvents);
+    IEnumerable<UpcomingEventDto> UpcomingEvents,
+    GenderBreakdownDto GenderBreakdown,
+    IEnumerable<MaritalStatusBreakdownDto> MaritalStatusBreakdowns);

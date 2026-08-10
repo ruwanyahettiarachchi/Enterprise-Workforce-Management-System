@@ -30,6 +30,7 @@ public class DashboardService : IDashboardService
 
         var totalActive = allEmployees.Count(e => e.Status == EmployeeStatus.Active);
         var totalProbation = allEmployees.Count(e => e.Status == EmployeeStatus.Probation);
+        var totalTerminated = allEmployees.Count(e => e.Status == EmployeeStatus.Terminated);
         var totalDepts = deptDetails.Count;
 
         // 2. Department distribution
@@ -55,11 +56,27 @@ public class DashboardService : IDashboardService
             var joinMonth = emp.JoinDate.Month;
             var joinDay = emp.JoinDate.Day;
 
-            // Calculate anniversary date for current or next year
-            var anniversaryThisYear = new DateTime(today.Year, joinMonth, joinDay);
+            // Calculate anniversary date safely handling leap years
+            DateTime anniversaryThisYear;
+            if (joinMonth == 2 && joinDay == 29 && !DateTime.IsLeapYear(today.Year))
+            {
+                anniversaryThisYear = new DateTime(today.Year, 2, 28);
+            }
+            else
+            {
+                anniversaryThisYear = new DateTime(today.Year, joinMonth, joinDay);
+            }
+
             if (anniversaryThisYear < today)
             {
-                anniversaryThisYear = anniversaryThisYear.AddYears(1);
+                if (joinMonth == 2 && joinDay == 29 && !DateTime.IsLeapYear(today.Year + 1))
+                {
+                    anniversaryThisYear = new DateTime(today.Year + 1, 2, 28);
+                }
+                else
+                {
+                    anniversaryThisYear = new DateTime(today.Year + 1, joinMonth, joinDay);
+                }
             }
 
             var daysUntil = (anniversaryThisYear - today).TotalDays;
@@ -73,19 +90,34 @@ public class DashboardService : IDashboardService
                     $"{emp.FirstName} {emp.LastName}",
                     emp.JobTitle,
                     eventLabel,
-                    anniversaryThisYear
+                    anniversaryThisYear,
+                    years
                 ));
             }
         }
 
-        var sortedEvents = upcomingEvents.OrderBy(e => e.EventDate).Take(5).ToList();
+        var sortedEvents = upcomingEvents.OrderBy(e => e.EventDate).Take(6).ToList();
+
+        // 4. Calculate Gender Representation
+        var maleCount = allEmployees.Count(e => e.Gender == Gender.Male);
+        var femaleCount = allEmployees.Count(e => e.Gender == Gender.Female);
+        var genderBreakdown = new GenderBreakdownDto(maleCount, femaleCount);
+
+        // 5. Calculate Marital Status Breakdown
+        var maritalBreakdowns = allEmployees
+            .GroupBy(e => e.MaritalStatus)
+            .Select(g => new MaritalStatusBreakdownDto(g.Key.ToString(), g.Count()))
+            .ToList();
 
         return new DashboardStatsResponse(
             totalActive,
             totalDepts,
             totalProbation,
+            totalTerminated,
             distribution,
-            sortedEvents
+            sortedEvents,
+            genderBreakdown,
+            maritalBreakdowns
         );
     }
 }

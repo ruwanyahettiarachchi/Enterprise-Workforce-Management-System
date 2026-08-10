@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DashboardService } from '../../core/services/dashboard.service';
-import { DashboardStats, DepartmentDistribution } from '../../core/models/dashboard.model';
+import { DashboardStats } from '../../core/models/dashboard.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -56,5 +56,26 @@ export class DashboardComponent implements OnInit {
   getBarWidthPercentage(count: number): number {
     const max = this.getMaxEmployeeCount();
     return Math.round((count / max) * 100);
+  }
+
+  getMalePercentage(): number {
+    if (!this.stats || !this.stats.genderBreakdown) return 0;
+    const total = this.stats.genderBreakdown.maleCount + this.stats.genderBreakdown.femaleCount;
+    if (total === 0) return 0;
+    return Math.round((this.stats.genderBreakdown.maleCount / total) * 100);
+  }
+
+  getFemalePercentage(): number {
+    if (!this.stats || !this.stats.genderBreakdown) return 0;
+    const total = this.stats.genderBreakdown.maleCount + this.stats.genderBreakdown.femaleCount;
+    if (total === 0) return 0;
+    return Math.round((this.stats.genderBreakdown.femaleCount / total) * 100);
+  }
+
+  getMaritalPercentage(count: number): number {
+    if (!this.stats || !this.stats.maritalStatusBreakdowns) return 0;
+    const total = this.stats.maritalStatusBreakdowns.reduce((sum, item) => sum + item.count, 0);
+    if (total === 0) return 0;
+    return Math.round((count / total) * 100);
   }
 }
