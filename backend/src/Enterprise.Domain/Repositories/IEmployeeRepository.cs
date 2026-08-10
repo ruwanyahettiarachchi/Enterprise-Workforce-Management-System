@@ -15,6 +15,8 @@ public interface IEmployeeRepository
     Task<(IEnumerable<Employee> Items, int TotalCount)> GetPagedAsync(
         string? searchTerm,
         int? status,
+        Guid? departmentId,
+        string? jobTitle,
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken = default);
@@ -26,6 +28,8 @@ public interface IEmployeeRepository
     void Delete(Employee employee);
     
     Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default);
+
+    Task<bool> ExistsByNICAsync(string nic, CancellationToken cancellationToken = default);
 
     Task<bool> HasEmployeesInDepartmentAsync(Guid departmentId, CancellationToken cancellationToken = default);
     

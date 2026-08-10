@@ -31,6 +31,8 @@ public class EmployeeRepository : IEmployeeRepository
     public async Task<(IEnumerable<Employee> Items, int TotalCount)> GetPagedAsync(
         string? searchTerm,
         int? status,
+        Guid? departmentId,
+        string? jobTitle,
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken = default)
@@ -50,6 +52,17 @@ public class EmployeeRepository : IEmployeeRepository
         if (status.HasValue)
         {
             query = query.Where(e => (int)e.Status == status.Value);
+        }
+
+        if (departmentId.HasValue)
+        {
+            query = query.Where(e => e.DepartmentId == departmentId.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(jobTitle))
+        {
+            var jobTitleTrim = jobTitle.Trim();
+            query = query.Where(e => e.JobTitle == jobTitleTrim);
         }
 
         var totalCount = await query.CountAsync(cancellationToken);
@@ -83,6 +96,12 @@ public class EmployeeRepository : IEmployeeRepository
     {
         var emailLower = email.Trim().ToLowerInvariant();
         return await _context.Employees.AnyAsync(e => e.Email == emailLower, cancellationToken);
+    }
+
+    public async Task<bool> ExistsByNICAsync(string nic, CancellationToken cancellationToken = default)
+    {
+        var nicUpper = nic.Trim().ToUpperInvariant();
+        return await _context.Employees.AnyAsync(e => e.NIC == nicUpper, cancellationToken);
     }
 
     public async Task<bool> HasEmployeesInDepartmentAsync(Guid departmentId, CancellationToken cancellationToken = default)

@@ -2,7 +2,7 @@
   <div class="form-header">
     <div class="title-block">
       <h1 class="page-header">{{ isEditMode ? 'Edit Employee Profile' : 'Register New Employee' }}</h1>
-      <p class="subtitle">Fill out the profile details to maintain corporate team records.</p>
+      <p class="subtitle">Complete the profile details to maintain corporate team records.</p>
     </div>
     <button mat-icon-button routerLink="/employees" title="Back to Directory">
       <mat-icon>arrow_back</mat-icon>
@@ -10,107 +10,227 @@
   </div>
 
   <mat-card class="form-card">
-    <mat-card-content>
+    <mat-card-content class="form-card-content">
       <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="employee-form">
 
-        <!-- Name Fields  Group -->
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="flex-field">
-            <mat-label>First Name</mat-label>
-            <input matInput formControlName="firstName" placeholder="Enter first name">
-            <mat-error *ngIf="employeeForm.get('firstName')?.hasError('required')">
-              First name is required.
-            </mat-error>
-            <mat-error *ngIf="employeeForm.get('firstName')?.hasError('maxlength')">
-              First name cannot exceed 50 characters.
-            </mat-error>
-          </mat-form-field>
+        <!-- Angular Material Tab Group for Professional Segmented Layout -->
+        <mat-tab-group [selectedIndex]="activeTabIndex" (selectedIndexChange)="activeTabIndex = $event"
+          animationDuration="200ms" class="form-tabs">
 
-          <mat-form-field appearance="outline" class="flex-field">
-            <mat-label>Last Name</mat-label>
-            <input matInput formControlName="lastName" placeholder="Enter last name">
-            <mat-error *ngIf="employeeForm.get('lastName')?.hasError('required')">
-              Last name is required.
-            </mat-error>
-            <mat-error *ngIf="employeeForm.get('lastName')?.hasError('maxlength')">
-              Last name cannot exceed 50 characters.
-            </mat-error>
-          </mat-form-field>
-        </div>
+          <!-- Tab 1: Personal & Demographic Info -->
+          <mat-tab label="Personal & Identity">
+            <div class="tab-content">
+              <!-- Name Row -->
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>First Name</mat-label>
+                  <input matInput formControlName="firstName" placeholder="Enter first name">
+                  <mat-error *ngIf="employeeForm.get('firstName')?.hasError('required')">
+                    First name is required.
+                  </mat-error>
+                </mat-form-field>
 
-        <!-- Contact Fields Group -->
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="flex-field">
-            <mat-label>Email Address</mat-label>
-            <input matInput type="email" formControlName="email" placeholder="example@company.com">
-            <mat-error *ngIf="employeeForm.get('email')?.hasError('required')">
-              Email is required.
-            </mat-error>
-            <mat-error *ngIf="employeeForm.get('email')?.hasError('email')">
-              Please enter a valid email address.
-            </mat-error>
-          </mat-form-field>
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>Last Name</mat-label>
+                  <input matInput formControlName="lastName" placeholder="Enter last name">
+                  <mat-error *ngIf="employeeForm.get('lastName')?.hasError('required')">
+                    Last name is required.
+                  </mat-error>
+                </mat-form-field>
+              </div>
 
-          <mat-form-field appearance="outline" class="flex-field">
-            <mat-label>Phone Number (Optional)</mat-label>
-            <input matInput formControlName="phone" placeholder="+1234567890">
-            <mat-error *ngIf="employeeForm.get('phone')?.hasError('maxlength')">
-              Phone number cannot exceed 20 characters.
-            </mat-error>
-          </mat-form-field>
-        </div>
+              <!-- Contact Row -->
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>Email Address</mat-label>
+                  <input matInput type="email" formControlName="email" placeholder="example@company.com">
+                  <mat-error *ngIf="employeeForm.get('email')?.hasError('required')">
+                    Email is required.
+                  </mat-error>
+                  <mat-error *ngIf="employeeForm.get('email')?.hasError('email')">
+                    Please enter a valid email address.
+                  </mat-error>
+                </mat-form-field>
 
-        <!-- Professional Details Group -->
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="flex-field">
-            <mat-label>Job Title</mat-label>
-            <input matInput formControlName="jobTitle" placeholder="e.g. Software Engineer">
-            <mat-error *ngIf="employeeForm.get('jobTitle')?.hasError('required')">
-              Job title is required.
-            </mat-error>
-          </mat-form-field>
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>Phone Number (Optional)</mat-label>
+                  <input matInput formControlName="phone" placeholder="+1234567890">
+                </mat-form-field>
+              </div>
 
-          <mat-form-field appearance="outline" class="flex-field">
-            <mat-label>Join Date</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="joinDate">
-            <mat-hint>MM/DD/YYYY</mat-hint>
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-error *ngIf="employeeForm.get('joinDate')?.hasError('required')">
-              Join date is required.
-            </mat-error>
-          </mat-form-field>
-        </div>
+              <!-- NIC, DOB & Gender (Auto-filled by NIC) -->
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>NIC (National Identity Card)</mat-label>
+                  <input matInput formControlName="nic" placeholder="e.g. 901234567V or 199012345678">
+                  <mat-hint>Supports both old (9-digit + V) and new (12-digit) formats</mat-hint>
+                  <mat-error *ngIf="employeeForm.get('nic')?.hasError('required')">
+                    NIC number is required.
+                  </mat-error>
+                  <mat-error *ngIf="employeeForm.get('nic')?.hasError('invalidNic')">
+                    Please enter a valid Sri Lankan NIC number.
+                  </mat-error>
+                </mat-form-field>
 
-        <!-- Status & Department Group -->
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="flex-field">
-            <mat-label>Employee Status</mat-label>
-            <mat-select formControlName="status">
-              <mat-option [value]="0">Active</mat-option>
-              <mat-option [value]="1">Probation</mat-option>
-              <mat-option [value]="2">Terminated</mat-option>
-            </mat-select>
-            <mat-error *ngIf="employeeForm.get('status')?.hasError('required')">
-              Status selection is required.
-            </mat-error>
-          </mat-form-field>
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>Date of Birth</mat-label>
+                  <input matInput [matDatepicker]="dobPicker" formControlName="dateOfBirth">
+                  <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #dobPicker></mat-datepicker>
+                  <mat-hint>Auto-extracted from valid NIC</mat-hint>
+                </mat-form-field>
+              </div>
 
-          <mat-form-field appearance="outline" class="flex-field">
-            <mat-label>Department</mat-label>
-            <mat-select formControlName="departmentId">
-              <mat-option [value]="null">Unassigned</mat-option>
-              <mat-option *ngFor="let dept of departments" [value]="dept.id">
-                {{ dept.name }} ({{ dept.code }})
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>Gender</mat-label>
+                  <mat-select formControlName="gender">
+                    <mat-option *ngFor="let g of genders" [value]="g.value">
+                      {{ g.label }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-hint>Auto-extracted from valid NIC</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>Marital Status</mat-label>
+                  <mat-select formControlName="maritalStatus">
+                    <mat-option *ngFor="let m of maritalStatuses" [value]="m.value">
+                      {{ m.label }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Tab 2: Contact & Address Information -->
+          <mat-tab label="Address Details">
+            <div class="tab-content">
+              <!-- Address Line 1 -->
+              <mat-form-field appearance="outline" class="full-width-field">
+                <mat-label>Address Line 1</mat-label>
+                <input matInput formControlName="addressLine1" placeholder="e.g. 123, Galle Road">
+                <mat-error *ngIf="employeeForm.get('addressLine1')?.hasError('required')">
+                  Address Line 1 is required.
+                </mat-error>
+              </mat-form-field>
+
+              <!-- District & Province -->
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>District</mat-label>
+                  <mat-select formControlName="district">
+                    <mat-option *ngFor="let d of districts" [value]="d">
+                      {{ d }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="employeeForm.get('district')?.hasError('required')">
+                    District selection is required.
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="flex-field readonly-field">
+                  <mat-label>Province</mat-label>
+                  <input matInput [value]="province" readonly placeholder="Auto-fills from selected District">
+                  <mat-hint>Auto-Filled</mat-hint>
+                </mat-form-field>
+              </div>
+
+              <!-- City & Postal Code -->
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>City</mat-label>
+                  <mat-select formControlName="city">
+                    <mat-option *ngFor="let c of cities" [value]="c.city">
+                      {{ c.city }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-hint *ngIf="!cities.length">Select a district first to view cities</mat-hint>
+                  <mat-error *ngIf="employeeForm.get('city')?.hasError('required')">
+                    City selection is required.
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="flex-field readonly-field">
+                  <mat-label>Postal Code</mat-label>
+                  <input matInput formControlName="postalCode" readonly placeholder="Auto-fills from selected City">
+                  <mat-hint>Auto-Filled</mat-hint>
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Tab 3: Corporate & Professional Details -->
+          <mat-tab label="Professional Details">
+            <div class="tab-content">
+              <!-- Job Title & Join Date -->
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>Job Title</mat-label>
+                  <input matInput formControlName="jobTitle" placeholder="e.g. Software Engineer">
+                  <mat-error *ngIf="employeeForm.get('jobTitle')?.hasError('required')">
+                    Job title is required.
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>Join Date</mat-label>
+                  <input matInput [matDatepicker]="joinPicker" formControlName="joinDate">
+                  <mat-datepicker-toggle matIconSuffix [for]="joinPicker"></mat-datepicker-toggle>
+                  <mat-datepicker #joinPicker></mat-datepicker>
+                  <mat-error *ngIf="employeeForm.get('joinDate')?.hasError('required')">
+                    Join date is required.
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <!-- Status & Department -->
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>Employee Status</mat-label>
+                  <mat-select formControlName="status">
+                    <mat-option *ngFor="let s of statuses" [value]="s.value">
+                      {{ s.label }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="employeeForm.get('status')?.hasError('required')">
+                    Status selection is required.
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="flex-field">
+                  <mat-label>Department</mat-label>
+                  <mat-select formControlName="departmentId">
+                    <mat-option [value]="null">Unassigned</mat-option>
+                    <mat-option *ngFor="let dept of departments" [value]="dept.id">
+                      {{ dept.name }} ({{ dept.code }})
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
 
         <!-- Form Actions -->
         <div class="form-actions">
-          <button mat-button type="button" routerLink="/employees" class="cancel-btn">Cancel</button>
-          <button mat-flat-button color="primary" type="submit" class="save-btn">
+          <button mat-button type="button" *ngIf="activeTabIndex > 0" (click)="previousTab()" class="cancel-btn">
+            <mat-icon>arrow_back</mat-icon> Back
+          </button>
+          <button mat-button type="button" *ngIf="activeTabIndex === 0" routerLink="/employees" class="cancel-btn">
+            Cancel
+          </button>
+
+          <span class="spacer" style="flex: 1 1 auto;"></span>
+
+          <button mat-flat-button color="primary" type="button" *ngIf="activeTabIndex < 2" (click)="nextTab()"
+            [disabled]="!isTabValid(activeTabIndex)" class="save-btn">
+            Next <mat-icon>arrow_forward</mat-icon>
+          </button>
+
+          <button mat-flat-button color="primary" type="submit" *ngIf="activeTabIndex === 2"
+            [disabled]="employeeForm.invalid" class="save-btn">
             <mat-icon>check</mat-icon> {{ isEditMode ? 'Update Profile' : 'Save Employee' }}
           </button>
         </div>

@@ -38,6 +38,8 @@ public class EmployeeService : IEmployeeService
     public async Task<(IEnumerable<EmployeeResponse> Items, int TotalCount)> GetPagedAsync(
         string? searchTerm,
         int? status,
+        Guid? departmentId,
+        string? jobTitle,
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken = default)
@@ -45,6 +47,8 @@ public class EmployeeService : IEmployeeService
         var (items, totalCount) = await _employeeRepository.GetPagedAsync(
             searchTerm,
             status,
+            departmentId,
+            jobTitle,
             pageNumber,
             pageSize,
             cancellationToken);
@@ -75,14 +79,21 @@ public class EmployeeService : IEmployeeService
 
     public async Task<EmployeeResponse> CreateAsync(CreateEmployeeRequest request, CancellationToken cancellationToken = default)
     {
-        // 1. Email Uniqueness Invariant Check
+        // 1. Email Uniqueness Check
         var emailLower = request.Email.Trim().ToLowerInvariant();
         if (await _employeeRepository.ExistsByEmailAsync(emailLower, cancellationToken))
         {
             throw new InvalidOperationException($"An employee with email '{request.Email}' already exists.");
         }
 
-        // 2. Validate department if provided
+        // 2. NIC Uniqueness Check
+        var nicUpper = request.NIC.Trim().ToUpperInvariant();
+        if (await _employeeRepository.ExistsByNICAsync(nicUpper, cancellationToken))
+        {
+            throw new InvalidOperationException($"An employee with NIC '{request.NIC}' already exists.");
+        }
+
+        // 3. Validate department if provided
         string? departmentName = null;
         if (request.DepartmentId.HasValue)
         {
@@ -94,7 +105,7 @@ public class EmployeeService : IEmployeeService
             departmentName = dept.Name;
         }
 
-        // 3. Create Rich Domain Model Entity
+        // 4. Create Rich Domain Model Entity
         var employee = new Employee(
             request.FirstName,
             request.LastName,
@@ -102,10 +113,18 @@ public class EmployeeService : IEmployeeService
             request.Phone,
             request.JobTitle,
             request.JoinDate,
-            request.DepartmentId
+            request.DepartmentId,
+            request.NIC,
+            request.DateOfBirth,
+            request.Gender,
+            request.MaritalStatus,
+            request.AddressLine1,
+            request.District,
+            request.City,
+            request.PostalCode
         );
 
-        // 4. Persist
+        // 5. Persist
         await _employeeRepository.AddAsync(employee, cancellationToken);
         await _employeeRepository.SaveChangesAsync(cancellationToken);
 
@@ -145,7 +164,12 @@ public class EmployeeService : IEmployeeService
             request.Email,
             request.Phone,
             request.JobTitle,
-            request.DepartmentId
+            request.DepartmentId,
+            request.MaritalStatus,
+            request.AddressLine1,
+            request.District,
+            request.City,
+            request.PostalCode
         );
 
         // 5. Update status
@@ -181,7 +205,15 @@ public class EmployeeService : IEmployeeService
             employee.Status,
             employee.JoinDate,
             employee.DepartmentId,
-            departmentName
+            departmentName,
+            employee.NIC,
+            employee.DateOfBirth,
+            employee.Gender,
+            employee.MaritalStatus,
+            employee.AddressLine1,
+            employee.District,
+            employee.City,
+            employee.PostalCode
         );
     }
 }

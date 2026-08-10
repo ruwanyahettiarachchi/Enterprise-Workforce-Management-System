@@ -11,7 +11,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { EmployeeService } from '../../../core/services/employee.service';
+import { DepartmentService } from '../../../core/services/department.service';
 import { Employee, EmployeeStatus } from '../../../core/models/employee.model';
+import { Department } from '../../../core/models/department.model';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -36,6 +38,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 })
 export class EmployeeListComponent implements OnInit {
   private employeeService = inject(EmployeeService);
+  private departmentService = inject(DepartmentService);
   private snackBar = inject(MatSnackBar);
 
   displayedColumns: string[] = ['name', 'email', 'jobTitle', 'department', 'status', 'joinDate', 'actions'];
@@ -48,11 +51,31 @@ export class EmployeeListComponent implements OnInit {
   
   searchTerm = '';
   statusFilter: number | undefined = undefined;
+  departmentFilter: string | undefined = undefined;
+  jobTitleFilter: string | undefined = undefined;
+
+  departments: Department[] = [];
+  
+  // Seeded list of job titles for filtering
+  jobTitles: string[] = [
+    "Software Engineer", 
+    "Senior Software Engineer", 
+    "Tech Lead", 
+    "QA Engineer", 
+    "Product Manager", 
+    "HR Generalist", 
+    "HR Manager", 
+    "Sales Executive", 
+    "Marketing Specialist", 
+    "Financial Analyst", 
+    "Accountant"
+  ];
 
   // Search debounce
   private searchSubject = new Subject<string>();
 
   ngOnInit(): void {
+    this.loadDepartments();
     this.loadEmployees();
 
     this.searchSubject.pipe(
@@ -65,12 +88,23 @@ export class EmployeeListComponent implements OnInit {
     });
   }
 
+  loadDepartments(): void {
+    this.departmentService.getDepartments().subscribe({
+      next: (data) => {
+        this.departments = data.sort((a, b) => a.name.localeCompare(b.name));
+      },
+      error: (err) => console.error('Failed to load departments list', err)
+    });
+  }
+
   loadEmployees(): void {
     this.employeeService.getEmployees(
       this.searchTerm,
       this.statusFilter,
       this.pageIndex + 1,
-      this.pageSize
+      this.pageSize,
+      this.departmentFilter,
+      this.jobTitleFilter
     ).subscribe({
       next: (result) => {
         this.employees = result.items;
@@ -92,6 +126,28 @@ export class EmployeeListComponent implements OnInit {
 
   onStatusFilterChange(value: number | string): void {
     this.statusFilter = value === 'all' ? undefined : Number(value);
+    this.pageIndex = 0;
+    this.loadEmployees();
+  }
+
+  onDepartmentFilterChange(value: string): void {
+    this.departmentFilter = value === 'all' ? undefined : value;
+    this.pageIndex = 0;
+    this.loadEmployees();
+  }
+
+  onJobTitleFilterChange(value: string): void {
+    this.jobTitleFilter = value === 'all' ? undefined : value;
+    this.pageIndex = 0;
+    this.loadEmployees();
+  }
+
+  resetFilters(searchInput: HTMLInputElement): void {
+    this.searchTerm = '';
+    searchInput.value = '';
+    this.statusFilter = undefined;
+    this.departmentFilter = undefined;
+    this.jobTitleFilter = undefined;
     this.pageIndex = 0;
     this.loadEmployees();
   }

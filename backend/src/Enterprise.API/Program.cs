@@ -15,7 +15,24 @@ builder.Services.AddControllers();
 
 // 3. Add API Explorer & Swagger for visual validation
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Enterprise Workforce Management System (EWMS) API",
+        Version = "v1",
+        Description = "An enterprise-grade Clean Architecture Web API to manage workforce entities, departments, and metric dashboards.",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "Enterprise Development Team",
+            Email = "support@ewms.com"
+        }
+    });
+
+    // Enable XML Comments in Swagger UI
+    var xmlFilename = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
 
 // 4. Configure CORS for local Angular development
 builder.Services.AddCors(options =>
@@ -36,6 +53,22 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+// Run database migrations and seed default data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<Enterprise.Infrastructure.EnterpriseDbContext>();
+        await Enterprise.Infrastructure.DbSeeder.SeedAsync(dbContext);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
 }
 
 app.UseHttpsRedirection();
