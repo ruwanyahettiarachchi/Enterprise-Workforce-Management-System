@@ -2,12 +2,12 @@
   <!-- Header Section -->
   <div class="dashboard-header">
     <div class="title-block">
-      <h1 class="page-header">Executive Dashboard</h1>
-      <p class="subtitle">Real-time workforce summary, organizational distribution, and upcoming milestone events.</p>
+      <h1 class="page-header">Workforce Intelligence Portal</h1>
+      <p class="subtitle">Real-time organizational telemetry, division headcounts, and workforce demographic analysis.</p>
     </div>
     <div class="quick-actions">
       <button mat-flat-button color="primary" routerLink="/employees/new">
-        <mat-icon>person_add</mat-icon> Add Employee
+        <mat-icon>person_add</mat-icon> Register Employee
       </button>
     </div>
   </div>
@@ -20,51 +20,66 @@
   <div *ngIf="!loading && stats" class="dashboard-content">
     <!-- Stat Cards Grid -->
     <div class="stats-grid">
-      <mat-card class="stat-card primary-card">
-        <div class="card-icon"><mat-icon>people</mat-icon></div>
-        <div class="card-details">
-          <span class="stat-value">{{ stats.totalActiveEmployees }}</span>
-          <span class="stat-label">Active Employees</span>
+      <mat-card class="stat-card active-card">
+        <div class="card-inner">
+          <div class="card-details">
+            <span class="stat-label">Active Force</span>
+            <span class="stat-value">{{ stats.totalActiveEmployees }}</span>
+            <span class="stat-trend"><mat-icon>arrow_upward</mat-icon> Permanent Staff</span>
+          </div>
+          <div class="card-icon"><mat-icon>people</mat-icon></div>
         </div>
       </mat-card>
 
-      <mat-card class="stat-card accent-card">
-        <div class="card-icon"><mat-icon>business</mat-icon></div>
-        <div class="card-details">
-          <span class="stat-value">{{ stats.totalDepartments }}</span>
-          <span class="stat-label">Departments</span>
+      <mat-card class="stat-card probation-card">
+        <div class="card-inner">
+          <div class="card-details">
+            <span class="stat-label">On Probation</span>
+            <span class="stat-value">{{ stats.totalProbationEmployees }}</span>
+            <span class="stat-trend warning-trend"><mat-icon>update</mat-icon> Pending Review</span>
+          </div>
+          <div class="card-icon"><mat-icon>pending_actions</mat-icon></div>
         </div>
       </mat-card>
 
-      <mat-card class="stat-card warning-card">
-        <div class="card-icon"><mat-icon>badge</mat-icon></div>
-        <div class="card-details">
-          <span class="stat-value">{{ stats.totalProbationEmployees }}</span>
-          <span class="stat-label">On Probation</span>
+      <mat-card class="stat-card departments-card">
+        <div class="card-inner">
+          <div class="card-details">
+            <span class="stat-label">Divisions</span>
+            <span class="stat-value">{{ stats.totalDepartments }}</span>
+            <span class="stat-trend"><mat-icon>business</mat-icon> Active Units</span>
+          </div>
+          <div class="card-icon"><mat-icon>domain</mat-icon></div>
         </div>
       </mat-card>
 
-      <mat-card class="stat-card success-card">
-        <div class="card-icon"><mat-icon>verified</mat-icon></div>
-        <div class="card-details">
-          <span class="stat-value">System OK</span>
-          <span class="stat-label">Clean Architecture v0.1</span>
+      <mat-card class="stat-card terminated-card">
+        <div class="card-inner">
+          <div class="card-details">
+            <span class="stat-label">Offboarded</span>
+            <span class="stat-value">{{ stats.totalTerminatedEmployees }}</span>
+            <span class="stat-trend danger-trend"><mat-icon>no_accounts</mat-icon> Terminated / Left</span>
+          </div>
+          <div class="card-icon"><mat-icon>person_off</mat-icon></div>
         </div>
       </mat-card>
     </div>
 
-    <!-- Main Visual Split: Department Distribution & Upcoming Events -->
+    <!-- Main Grid Layout -->
     <div class="visual-grid">
-      <!-- Left: Department Distribution Chart -->
+      <!-- Left Card: Department Distribution -->
       <mat-card class="visual-card distribution-card">
         <mat-card-header class="card-header">
-          <mat-card-title><mat-icon>pie_chart</mat-icon> Department Distribution</mat-card-title>
-          <mat-card-subtitle>Active headcount breakdown across corporate divisions</mat-card-subtitle>
+          <div class="header-icon"><mat-icon>insert_chart</mat-icon></div>
+          <div class="header-text">
+            <mat-card-title>Division Breakdown</mat-card-title>
+            <mat-card-subtitle>Headcount shares mapped by structural departments</mat-card-subtitle>
+          </div>
         </mat-card-header>
 
         <mat-card-content class="card-body">
           <div *ngIf="!stats.departmentDistributions.length" class="empty-state">
-            No departments created yet. <a routerLink="/departments">Set up departments</a>
+            No departments created yet. <a routerLink="/departments">Register a department</a>
           </div>
 
           <div class="bar-chart-container">
@@ -74,45 +89,143 @@
                 <span class="dept-code">{{ dist.code }}</span>
               </div>
               <div class="bar-col">
-                <div class="bar-fill" [style.width.%]="getBarWidthPercentage(dist.employeeCount)"></div>
+                <div class="bar-track">
+                  <div class="bar-fill" [style.width.%]="getBarWidthPercentage(dist.employeeCount)"></div>
+                </div>
               </div>
               <div class="value-col">
-                <span class="count-badge">{{ dist.employeeCount }} staff</span>
+                <span class="count-badge">{{ dist.employeeCount }} members</span>
               </div>
             </div>
           </div>
         </mat-card-content>
       </mat-card>
 
-      <!-- Right: Upcoming Events Widget -->
-      <mat-card class="visual-card events-card">
+      <!-- Right Card: Demographics & Diversity -->
+      <mat-card class="visual-card demographics-card">
         <mat-card-header class="card-header">
-          <mat-card-title><mat-icon>event</mat-icon> Upcoming Milestones</mat-card-title>
-          <mat-card-subtitle>Work anniversaries and join dates in next 30 days</mat-card-subtitle>
+          <div class="header-icon"><mat-icon>analytics</mat-icon></div>
+          <div class="header-text">
+            <mat-card-title>Demographics & Ratios</mat-card-title>
+            <mat-card-subtitle>Gender balance and marital status proportions</mat-card-subtitle>
+          </div>
         </mat-card-header>
 
         <mat-card-content class="card-body">
-          <div *ngIf="!stats.upcomingEvents.length" class="empty-state">
-            No upcoming milestones in the next 30 days.
-          </div>
+          <div class="demographics-wrapper">
+            <!-- Gender representation ratios -->
+            <div class="demographic-section">
+              <div class="demo-label">
+                <span>Gender Balance</span>
+                <span class="ratio-values">{{ getMalePercentage() }}% Male / {{ getFemalePercentage() }}% Female</span>
+              </div>
+              <div class="gender-split-bar">
+                <div class="male-fill" [style.width.%]="getMalePercentage()" title="Male staff">
+                  <mat-icon>male</mat-icon> {{ stats.genderBreakdown.maleCount }}
+                </div>
+                <div class="female-fill" [style.width.%]="getFemalePercentage()" title="Female staff">
+                  <mat-icon>female</mat-icon> {{ stats.genderBreakdown.femaleCount }}
+                </div>
+              </div>
+            </div>
 
-          <div class="events-list">
-            <div *ngFor="let evt of stats.upcomingEvents" class="event-item">
-              <div class="event-icon-avatar">
-                <mat-icon>cake</mat-icon>
+            <!-- Marital status distribution -->
+            <div class="demographic-section">
+              <div class="demo-label">
+                <span>Marital Distribution</span>
               </div>
-              <div class="event-details">
-                <span class="emp-name">{{ evt.employeeName }}</span>
-                <span class="emp-title">{{ evt.jobTitle }}</span>
-              </div>
-              <div class="event-tag-box">
-                <span class="event-type-tag">{{ evt.eventType }}</span>
-                <span class="event-date">{{ evt.eventDate | date:'mediumDate' }}</span>
+              <div class="marital-chart">
+                <div *ngFor="let m of stats.maritalStatusBreakdowns" class="marital-row">
+                  <span class="marital-status-lbl">{{ m.status }}</span>
+                  <div class="marital-track">
+                    <div class="marital-fill" [style.width.%]="getMaritalPercentage(m.count)"></div>
+                  </div>
+                  <span class="marital-val">{{ m.count }} ({{ getMaritalPercentage(m.count) }}%)</span>
+                </div>
               </div>
             </div>
           </div>
         </mat-card-content>
       </mat-card>
     </div>
+
+    <!-- Secondary Row: Milestones & System Summary -->
+    <div class="visual-grid secondary-grid">
+      <!-- Left: Upcoming Milestones -->
+      <mat-card class="visual-card events-card">
+        <mat-card-header class="card-header">
+          <div class="header-icon"><mat-icon>celebration</mat-icon></div>
+          <div class="header-text">
+            <mat-card-title>Upcoming Anniversaries</mat-card-title>
+            <mat-card-subtitle>Work anniversary alerts within the next 30 days</mat-card-subtitle>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content class="card-body">
+          <div *ngIf="!stats.upcomingEvents.length" class="empty-state">
+            <mat-icon class="empty-icon">info</mat-icon>
+            <p>No upcoming work anniversaries detected in the next 30 days.</p>
+          </div>
+
+          <div class="events-list" *ngIf="stats.upcomingEvents.length">
+            <div *ngFor="let evt of stats.upcomingEvents" class="event-item">
+              <div class="event-avatar">
+                <mat-icon>star</mat-icon>
+              </div>
+              <div class="event-info">
+                <span class="emp-name">{{ evt.employeeName }}</span>
+                <span class="emp-title">{{ evt.jobTitle }}</span>
+              </div>
+              <div class="event-milestone">
+                <span class="milestone-badge">{{ evt.eventType }}</span>
+                <span class="milestone-date">{{ evt.eventDate | date:'mediumDate' }}</span>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Right: Quick Portal Shortcuts & Operations -->
+      <mat-card class="visual-card system-card">
+        <mat-card-header class="card-header">
+          <div class="header-icon"><mat-icon>settings_suggest</mat-icon></div>
+          <div class="header-text">
+            <mat-card-title>Portal Utilities</mat-card-title>
+            <mat-card-subtitle>System settings, registry actions, and telemetry stats</mat-card-subtitle>
+          </div>
+        </mat-card-header>
+
+        <mat-card-content class="card-body portal-shortcuts">
+          <div class="shortcut-buttons-grid">
+            <a mat-stroked-button class="shortcut-btn" routerLink="/employees">
+              <mat-icon>person</mat-icon> Staff Directory
+            </a>
+            <a mat-stroked-button class="shortcut-btn" routerLink="/departments">
+              <mat-icon>lan</mat-icon> Department Setups
+            </a>
+          </div>
+
+          <div class="portal-info-box">
+            <div class="info-row">
+              <span class="info-label">Architecture</span>
+              <span class="info-value text-primary">Clean DDD (.NET 9 + Angular 19)</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Database Store</span>
+              <span class="info-value">SQL Server LocalDB</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">CORS Policy</span>
+              <span class="info-value success-value">Configured & Securing</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Location Services</span>
+              <span class="info-value">Sri Lanka Cities JSON CDN</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
   </div>
 </div>

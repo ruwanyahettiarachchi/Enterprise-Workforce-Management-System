@@ -14,7 +14,9 @@ export class EmployeeService {
     searchTerm?: string,
     status?: number,
     pageNumber: number = 1,
-    pageSize: number = 10
+    pageSize: number = 10,
+    departmentId?: string,
+    jobTitle?: string
   ): Observable<PaginatedResult<Employee>> {
     let params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
@@ -25,6 +27,12 @@ export class EmployeeService {
     }
     if (status !== undefined && status !== null) {
       params = params.set('status', status.toString());
+    }
+    if (departmentId) {
+      params = params.set('departmentId', departmentId);
+    }
+    if (jobTitle) {
+      params = params.set('jobTitle', jobTitle);
     }
 
     return this.http.get<PaginatedResult<Employee>>(this.apiUrl, { params });
